@@ -26,7 +26,7 @@ const todoReducer = (state = INITIAL_STATE, action) => {
     case 'TODO_ADD':
       return { ...state, tasksArray: [...tasksArray, payload] }
     case 'TODO_REMOVE':
-      return { ...state, tasksArray: tasksArray.filter(item => item !== payload) }
+      return { ...state, tasksArray: tasksArray.filter((item, idx) => idx !== payload) }
     default:
       return state;
   }

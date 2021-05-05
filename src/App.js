@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { store } from './store'
+import React, { useState } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
 import { actions as todoActions } from './store/reducers/todo'
 
-const App = () => {
+const App = ({ addTask, removeTask, tasksArray }) => {
   const [task, setTask] = useState('')
-  const [tasksArray, setTasksArray] = useState(['tarefa 3'])
-
-  useEffect(() => {
-    setTasksArray( store.getState().todoReducer.tasksArray);
-
-    store.subscribe(() => {
-      setTasksArray(store.getState().todoReducer.tasksArray);
-    })
-  }, [])
 
   const handleInputChange = event => {
     setTask(event.target.value)
@@ -20,15 +13,13 @@ const App = () => {
 
   const handleFormSubmit = event => {
     event.preventDefault()
-    //setTasksArray( oldTasks => [...oldTasks, task]);
-    store.dispatch(todoActions.add(task))
+    addTask(task)
     setTask('')
   }
 
-  const handleRemove = (event, i) => {
+  const handleRemove = (event, task) => {
     event.preventDefault()
-    let removeTasksArray = tasksArray.filter((item, idx) => idx !== i)
-    setTasksArray( removeTasksArray );
+    removeTask(task);
   }
 
   return (
@@ -46,4 +37,11 @@ const App = () => {
   )
 }
 
-export default App
+const mapStateToProps = (state) => ({ tasksArray: state.todoReducer.tasksArray })
+
+const mapDispatchToProps = (dispatch) => ({
+  addTask: bindActionCreators(todoActions.add, dispatch),
+  removeTask: bindActionCreators(todoActions.remove, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
