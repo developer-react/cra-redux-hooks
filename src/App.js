@@ -1,8 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { store } from './store'
+import { actions as todoActions } from './store/reducers/todo'
 
 const App = () => {
   const [task, setTask] = useState('')
-  const [tasksArray, setTasksArray] = useState(['tarefa 1'])
+  const [tasksArray, setTasksArray] = useState(['tarefa 3'])
+
+  useEffect(() => {
+    setTasksArray( store.getState().todoReducer.tasksArray);
+
+    store.subscribe(() => {
+      setTasksArray(store.getState().todoReducer.tasksArray);
+    })
+  }, [])
 
   const handleInputChange = event => {
     setTask(event.target.value)
@@ -10,7 +20,8 @@ const App = () => {
 
   const handleFormSubmit = event => {
     event.preventDefault()
-    setTasksArray( oldTasks => [...oldTasks, task]);
+    //setTasksArray( oldTasks => [...oldTasks, task]);
+    store.dispatch(todoActions.add(task))
     setTask('')
   }
 
@@ -28,7 +39,7 @@ const App = () => {
       </form>
       <ul>
         {tasksArray.map((t, i) => (
-          <li key={i}>{t} <button onClick={(event) => handleRemove(event, i)}>done</button> </li>
+          <li key={i}> {t} <button onClick={(event) => handleRemove(event, i)}>done</button> </li>
         ))}
       </ul>
     </>
