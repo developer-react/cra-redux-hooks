@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
-import { actions as todoActions } from './store/reducers/todo'
+import { todoActions } from './store/reducers/todo'
+import { selectors  } from './store/reducers/selectors'
 
 const App = () => {
   const [task, setTask] = useState('')
   const dispatch = useDispatch()
-  const tasksArray = useSelector(state => state.todoReducer.tasksArray)
+  const tasksArray = useSelector(selectors.getTaks)
 
   const handleInputChange = event => {
     setTask(event.target.value)
