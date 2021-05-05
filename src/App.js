@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { actions as todoActions } from './store/reducers/todo'
 
-const App = ({ addTask, removeTask, tasksArray }) => {
+const App = () => {
   const [task, setTask] = useState('')
+  const dispatch = useDispatch()
+  const tasksArray = useSelector(state => state.todoReducer.tasksArray)
 
   const handleInputChange = event => {
     setTask(event.target.value)
@@ -13,13 +14,14 @@ const App = ({ addTask, removeTask, tasksArray }) => {
 
   const handleFormSubmit = event => {
     event.preventDefault()
-    addTask(task)
+    if(task === '') { return  }
+    dispatch(todoActions.add(task))
     setTask('')
   }
 
   const handleRemove = (event, task) => {
     event.preventDefault()
-    removeTask(task);
+    dispatch(todoActions.remove(task));
   }
 
   return (
@@ -37,11 +39,4 @@ const App = ({ addTask, removeTask, tasksArray }) => {
   )
 }
 
-const mapStateToProps = (state) => ({ tasksArray: state.todoReducer.tasksArray })
-
-const mapDispatchToProps = (dispatch) => ({
-  addTask: bindActionCreators(todoActions.add, dispatch),
-  removeTask: bindActionCreators(todoActions.remove, dispatch)
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App
